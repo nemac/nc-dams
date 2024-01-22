@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GeoJSON, LayersControl, Marker, MapContainer, Popup, TileLayer } from 'react-leaflet';
 import Control from 'react-leaflet-custom-control';
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
-import { styled } from '@mui/system';
+import styled from '@emotion/styled';
 import L from 'leaflet';
 
 export const StyledMapContainer = styled(MapContainer)(() => ({
@@ -17,9 +17,9 @@ export default function ReactLeafletMap() {
   const [map, setMap] = useState(null);
   const [geojsonData, setGeojsonData] = useState(null);
 
-useEffect(() => {
+  useEffect(() => {
     // Fetch GeoJSON data
-    fetch('/Inventory_20231218.geojson')
+    fetch('/nc-dams/Inventory_20231218.geojson')
       .then(response => response.json())
       .then(data => setGeojsonData(data));
   }, []);
