@@ -1,7 +1,6 @@
 import ReactLeafletMap from './components/ReactLeafletMap'
 
 function App() {
-
   return (
     <>
       <ReactLeafletMap />
