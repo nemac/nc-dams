@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GeoJSON, LayersControl, Marker, MapContainer, Popup, TileLayer } from 'react-leaflet';
+import { FeatureGroup, GeoJSON, LayersControl, LayerGroup, Marker, MapContainer, Popup, TileLayer } from 'react-leaflet';
 import Control from 'react-leaflet-custom-control';
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 import * as turf from '@turf/turf'
@@ -7,8 +7,8 @@ import styled from '@emotion/styled';
 import L from 'leaflet';
 
 export const StyledMapContainer = styled(MapContainer)(() => ({
-  position: 'relative',
-  height: '100%',
+  height: 'calc(100% - 50px)',
+  width: 'calc(100% - 20px)',
 }));
 
 export default function ReactLeafletMap() {
@@ -70,29 +70,37 @@ export default function ReactLeafletMap() {
         </MarkerClusterGroup>
         {intersectingHuc && (
           <>
-            <GeoJSON key={intersectingHuc.properties.id} data={intersectingHuc} />
-            {intersectingHuc.properties.upstream_huc_list.map((item) => {
-              const feature = huc12.features.find(feature => 
-                feature.properties.huc12 === item
-              );
-              if (!feature) return null;
-              return <GeoJSON key={feature.properties.id} data={feature} style={{ color:'red' }}/>;
-            })}
-            {intersectingHuc.properties.downstream_huc_list.map((item) => {
-              const feature = huc12.features.find(feature => 
-                feature.properties.huc12 === item
-              );
-              if (!feature) return null;
-              return <GeoJSON key={feature.properties.id} data={feature} style={{ color:'green' }}/>;
-            })}
+            <LayersControl>
+              <LayersControl.Overlay checked name="Upstream Huc12">
+                <LayerGroup>
+                  {intersectingHuc.properties.upstream_huc_list.map((item) => {
+                    const feature = huc12.features.find(feature => 
+                      feature.properties.huc12 === item
+                    );
+                    if (!feature) return null;
+                    return (
+                      <GeoJSON key={feature.properties.id} data={feature} style={{ color:'#d8b365' }}/>
+                    );
+                  })}
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Downstream Huc12">
+                <LayerGroup>
+                  {intersectingHuc.properties.downstream_huc_list.map((item) => {
+                    const feature = huc12.features.find(feature => 
+                      feature.properties.huc12 === item
+                    );
+                    if (!feature) return null;
+                    return <GeoJSON key={feature.properties.id} data={feature} style={{ color:'#5ab4ac' }}/>;
+                  })}
+                </LayerGroup>
+              </LayersControl.Overlay>
+              <LayersControl.Overlay checked name="Selected Dam Huc12">
+                <GeoJSON key={intersectingHuc.properties.id} data={intersectingHuc} style={{ color:'black' }} />
+              </LayersControl.Overlay>
+            </LayersControl>
           </>
         )}
-        {/* {downstreamHuc12?.map((item) => {
-          const feature = huc12.features.find(feature => 
-            feature.properties.huc12 === item
-          );
-          <GeoJSON key={feature.properties.id} data={feature} />
-        })} */}
         <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@latest/dist/leaflet.draw-src.css" />
         <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"/>
