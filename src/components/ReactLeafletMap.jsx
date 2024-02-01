@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { FeatureGroup, GeoJSON, LayersControl, LayerGroup, Marker, MapContainer, Popup, TileLayer } from 'react-leaflet';
+import { FeatureGroup, GeoJSON, LayersControl, LayerGroup, Marker, MapContainer, Popup, TileLayer, Tooltip } from 'react-leaflet';
 import Control from 'react-leaflet-custom-control';
+import * as esri from 'esri-leaflet';
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 import * as turf from '@turf/turf'
 import styled from '@emotion/styled';
@@ -16,16 +17,48 @@ export default function ReactLeafletMap() {
   const zoom = 8;
 
   const [map, setMap] = useState(null);
+  const [clickPoint, setClickPoint] = useState(null);
   const [damData, setDamData] = useState(null);
   const [huc12, sethuc12] = useState(null);
   const [intersectingHuc, setIntersectingHuc] = useState(null);
+
+
+  // Keeping this here if/when we move over to AGOL
+  // const huc12Layer = esri.featureLayer({
+  //   url: 'https://services1.arcgis.com/PwLrOgCfU0cYShcG/arcgis/rest/services/huc12_processed/FeatureServer/0'
+  // });
+  // const query = huc12Layer.query();
+
+  // useEffect(() => {
+  //   if (!clickPoint) return;
+  //   query.where = `huc12 = ${huc12}`;
+  //   query.run((error, featureCollection, response) => {
+  //     if (error) {
+  //       return;
+  //     }
+  //     if (featureCollection.features.length === 0) {
+  //       return;
+  //     }
+  //     sethuc12(featureCollection)
+  //   })
+  // }, [clickPoint]);
+
+  // useEffect(() => {
+  //   if (!huc12) return;
+  //   const intersectingPolygon = huc12.features.find(feature => {
+  //     const polygon = turf.polygon(feature.geometry.coordinates);
+  //     return turf.booleanPointInPolygon(clickPoint, polygon)
+  //   });
+  //   setIntersectingHuc(intersectingPolygon);
+  // }, [huc12]);
+
 
   useEffect(() => {
     // Fetch GeoJSON data
     fetch('/nc-dams/Inventory_20231218.geojson')
       .then(response => response.json())
       .then(data => setDamData(data));
-    fetch('/nc-dams/huc12_processed.geojson')
+    fetch('/nc-dams/final_data_with_buildings.geojson')
       .then(response => response.json())
       .then(data => sethuc12(data));
   }, []);
@@ -36,7 +69,7 @@ export default function ReactLeafletMap() {
         id='map-container'
         center={center}
         zoom={zoom}
-        map={setMap}
+        ref={setMap}
         maxZoom={18}
       >
         <TileLayer
@@ -53,6 +86,7 @@ export default function ReactLeafletMap() {
                 eventHandlers={{
                   click: () => {
                     const point = [longitude, latitude];
+                    setClickPoint(point);
                     const intersectingPolygon = huc12.features.find(feature => {
                       const polygon = turf.polygon(feature.geometry.coordinates);
                       return turf.booleanPointInPolygon(point, polygon)
@@ -62,7 +96,9 @@ export default function ReactLeafletMap() {
                 }}
               >
                 <Popup>
-                  {item.properties.Dam_Name}
+                  <ul>Dam Name: {item.properties.Dam_Name}</ul>
+                  <ul>Dam Status: {item.properties.DAM_STATUS}</ul>
+                  <ul>Dam Hazard: {item.properties.DAM_HAZARD}</ul>
                 </Popup>
               </Marker>
             );
@@ -79,7 +115,20 @@ export default function ReactLeafletMap() {
                     );
                     if (!feature) return null;
                     return (
-                      <GeoJSON key={feature.properties.id} data={feature} style={{ color:'#d8b365' }}/>
+                      <GeoJSON
+                        key={feature.properties.id}
+                        data={feature}
+                        style={{ color:'#d8b365' }}
+                      >
+                        <Tooltip sticky={true}>
+                          <li> HUC12: {feature.properties.huc12} </li>
+                          <li> One Year Change Percent: {feature.properties.ndvi_change_one_year_percent}% </li>
+                          <li> One Year Change Category: {feature.properties.ndvi_change_one_year_bin} </li>
+                          <li> Three Year Change Percent: {feature.properties.ndvi_change_three_year_percent}% </li>
+                          <li> Three Year Change: {feature.properties.ndvi_change_three_year_bin} </li>
+                          <li> Number of Buildings: {feature.properties.total_building_count} </li>
+                        </Tooltip>
+                      </GeoJSON>
                     );
                   })}
                 </LayerGroup>
@@ -91,12 +140,40 @@ export default function ReactLeafletMap() {
                       feature.properties.huc12 === item
                     );
                     if (!feature) return null;
-                    return <GeoJSON key={feature.properties.id} data={feature} style={{ color:'#5ab4ac' }}/>;
+                    return (
+                      <GeoJSON
+                        key={feature.properties.id}
+                        data={feature}
+                        style={{ color:'#5ab4ac' }}
+                      >
+                        <Tooltip sticky={true}>
+                          <li> HUC12: {feature.properties.huc12} </li>
+                          <li> One Year Change Percent: {feature.properties.ndvi_change_one_year_percent}% </li>
+                          <li> One Year Change Category: {feature.properties.ndvi_change_one_year_bin} </li>
+                          <li> Three Year Change Percent: {feature.properties.ndvi_change_three_year_percent}% </li>
+                          <li> Three Year Change Category: {feature.properties.ndvi_change_three_year_bin} </li>
+                          <li> Number of Buildings: {feature.properties.total_building_count} </li>
+                        </Tooltip>
+                      </GeoJSON>
+                    );
                   })}
                 </LayerGroup>
               </LayersControl.Overlay>
               <LayersControl.Overlay checked name="Selected Dam Huc12">
-                <GeoJSON key={intersectingHuc.properties.id} data={intersectingHuc} style={{ color:'black' }} />
+                <GeoJSON 
+                  key={intersectingHuc.properties.id}
+                  data={intersectingHuc} 
+                  style={{ color:'black' }}
+                >
+                  <Tooltip sticky={true}>
+                    <li> HUC12: {intersectingHuc.properties.huc12} </li>
+                    <li> One Year Change Percent: {intersectingHuc.properties.ndvi_change_one_year_percent}% </li>
+                    <li> One Year Change: {intersectingHuc.properties.ndvi_change_one_year_bin} </li>
+                    <li> Three Year Change Percent: {intersectingHuc.properties.ndvi_change_three_year_percent}% </li>
+                    <li> Three Year Change: {intersectingHuc.properties.ndvi_change_three_year_bin} </li>
+                    <li> Number of Buildings: {intersectingHuc.properties.total_building_count} </li>
+                  </Tooltip>
+                </GeoJSON>
               </LayersControl.Overlay>
             </LayersControl>
           </>
