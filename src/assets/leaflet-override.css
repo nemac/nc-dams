@@ -1,0 +1,17 @@
+.dams-icon {
+    background: transparent;
+    border: none;
+    svg {
+        stroke: #003DA5;
+        color: #003DA5;
+    }
+}
+
+.current-dam-icon {
+    background: transparent;
+    border: none;
+    svg {
+        stroke: #E6A65D;
+        color: #E6A65D;
+    }
+}
