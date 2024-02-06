@@ -209,7 +209,6 @@ export default function ReactLeafletMap() {
   const [currentDam, setCurrentDam] = useState(null);
   const [mapBy, setMapBy] = useState('updown');
 
-
   const getMapColor = ((feature, hucDirection) =>  {
     let rank = 'CURRENT';
 
@@ -246,10 +245,8 @@ export default function ReactLeafletMap() {
       default:
         return lowColor;
       }
-
   });
 
-  
   // const [upstreamHUCS, setUpstreamHUCS] = useState(null);
   // const [downstreamHUCS, setDownstreamHUCS] = useState(null);
 
@@ -318,7 +315,6 @@ export default function ReactLeafletMap() {
     iconSize: 40,
     className: 'current-dam-icon'
   });
-  console.log(mapBy)
   return (
     <Grid container spacing={1} p={1} style={{height: '100%'}}>
       <Grid xs={12} px={0} pt={0} pb={2} >
