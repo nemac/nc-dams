@@ -45,7 +45,7 @@ export const StyledMapContainer = styled(MapContainer)(() => ({
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
-    right: -20,
+    right: -50,
     top: 16,
   },
 }));
@@ -315,6 +315,7 @@ export default function ReactLeafletMap() {
     iconSize: 40,
     className: 'current-dam-icon'
   });
+
   return (
     <Grid container spacing={1} p={1} style={{height: '100%'}}>
       <Grid xs={12} px={0} pt={0} pb={2} >
@@ -328,13 +329,12 @@ export default function ReactLeafletMap() {
       </Grid>  
       <Grid xs={12} sm={12} md={5} px={2} py={0.5} style={{height: 'calc(100% - 96px)', overflowY: 'scroll'}}>
         <Box pb={1}>
-          <Accordion expanded={true}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}} >
+          <Box pb={2}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
-                <PlaceIcon align='center' style={{ color: '#003DA5', stroke: '#003DA5', paddingRight: '8px' }}/> Dams
+                <PlaceIcon align='center' style={{ color: '#003DA5', stroke: '#003DA5', paddingRight: '8px' }}/> Find a dam
               </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
+            </Box>
+            <Box pb={2}>
             {damData ? (
               <Autocomplete
                   id="multiple-limit-tags"
@@ -354,13 +354,12 @@ export default function ReactLeafletMap() {
                     setIntersectingHuc(intersectingPolygon);                    
                   }}
                   isOptionEqualToValue={(option, value) => option.properties.Dam_Name === value.properties.Dam_Name}
-                  renderInput={(params) => (<TextField {...params} key={'test'} label="Search for a dam" placeholder="Search for a dam" />)} 
+                  renderInput={(params) => (<TextField {...params} key={'test'} label="Find for a dam" placeholder="Find for a dam" />)} 
                   sx={{ width: '500px' }}/>
             ) : (
               <></>
             )}
-            </AccordionDetails>
-          </Accordion>
+            </Box>
         </Box>
         <Box pt={1} pb={2} px={1}>
           <FormControl size='small' >
@@ -419,7 +418,7 @@ export default function ReactLeafletMap() {
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
-                <StyledBadge badgeContent={currentDamFeature ? 1 : 0} color="primary" showZero>
+                <StyledBadge badgeContent={currentDamFeature ? '1 Dam' : '0 Dam\'s'} color="primary" showZero>
                   <PlaceIcon align='center' style={{ color: '#A6192E', stroke: '#C26E60', paddingRight: '8px' }}/> Current Dam
                 </StyledBadge>
               </Typography>
@@ -477,7 +476,7 @@ export default function ReactLeafletMap() {
          <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
-                <StyledBadge badgeContent={intersectingHuc ? 1 : 0} showZero color="primary" style={{right: '-15px'}}>
+                <StyledBadge badgeContent={intersectingHuc ? '1 HUC12' : '0 HUC12'} showZero color="primary" style={{right: '-15px'}}>
                   <PentagonTwoToneIcon align='center' style={{ paddingRight: '8px' }}/> Watershed Dam is Located In
                 </StyledBadge>
               </Typography>
@@ -490,6 +489,8 @@ export default function ReactLeafletMap() {
                       <TableCell variant='head' align="left">HUC 12</TableCell>
                       <TableCell variant='head' align="center">1 Year Change Category</TableCell>
                       <TableCell variant='head' align="center">3 Year Change Category</TableCell>
+                      <TableCell variant='head' align="center">Run Off Coefficient</TableCell>
+                      <TableCell variant='head' align="center">Vegetation Density</TableCell>                      
                       <TableCell variant='head' align="right"># Structures</TableCell>
                     </TableRow>
                   </TableHead>
@@ -516,6 +517,8 @@ export default function ReactLeafletMap() {
                         variant="filled" 
                         style={chipRank(intersectingHuc.properties.ndvi_change_three_year_bin)} />                        
                       </TableCell>
+                      <TableCell align="right">{intersectingHuc.properties.runoff_coefficient.toFixed(4)}</TableCell>
+                          <TableCell align="right">{intersectingHuc.properties.vegetation_density.toFixed(4)}</TableCell>                          
                       <TableCell align="right">{intersectingHuc.properties.total_building_count}</TableCell>
                     </TableRow>
                     )}
@@ -529,7 +532,7 @@ export default function ReactLeafletMap() {
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
-                <StyledBadge badgeContent={intersectingHuc ? intersectingHuc.properties.downstream_huc_list.length : 0} showZero color="primary" style={{right: '-15px'}}>
+                <StyledBadge badgeContent={intersectingHuc ? `${intersectingHuc.properties.downstream_huc_list.length} HUC12`: '0 HUC12'} showZero color="primary" style={{right: '-15px'}}>
                   <PentagonTwoToneIcon align='center' style={{ color:'#5ab4ac', paddingRight: '8px' }}/> Downstream Watersheds 
                 </StyledBadge>
               </Typography>          
@@ -542,6 +545,8 @@ export default function ReactLeafletMap() {
                       <TableCell variant='head' align="left">HUC 12</TableCell>
                       <TableCell variant='head' align="center">1 Year Change Category</TableCell>
                       <TableCell variant='head' align="center">3 Year Change Category</TableCell>
+                      <TableCell variant='head' align="center">Run Off Coefficient</TableCell>
+                      <TableCell variant='head' align="center">Vegetation Density</TableCell>                      
                       <TableCell variant='head' align="right"># Structures</TableCell>
                     </TableRow>
                   </TableHead>
@@ -574,6 +579,8 @@ export default function ReactLeafletMap() {
                               variant="filled" 
                               style={chipRank(feature.properties.ndvi_change_three_year_bin)} />                        
                           </TableCell>
+                          <TableCell align="right">{feature.properties.runoff_coefficient ? feature.properties.runoff_coefficient.toFixed(4) : 0}</TableCell>
+                          <TableCell align="right">{feature.properties.runoff_coefficient ? feature.properties.vegetation_density.toFixed(4) : 0}</TableCell>                          
                           <TableCell align="right">{feature.properties.total_building_count}</TableCell>
                         </TableRow>                
                       );
@@ -588,7 +595,7 @@ export default function ReactLeafletMap() {
         <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
             <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
-              <StyledBadge badgeContent={intersectingHuc ? intersectingHuc.properties.upstream_huc_list.length : 0} showZero color="primary" style={{right: '-15px'}}>
+              <StyledBadge badgeContent={intersectingHuc ? `${intersectingHuc.properties.upstream_huc_list.length} HUC12`: '0 HUC12'} showZero color="primary" style={{right: '-15px'}}>
                 <PentagonTwoToneIcon align='center' style={{ color:'#d8b365', paddingRight: '8px' }}/> Upstream Watersheds 
               </StyledBadge>
             </Typography>          
@@ -601,6 +608,8 @@ export default function ReactLeafletMap() {
                       <TableCell variant='head' align="left">HUC 12</TableCell>
                       <TableCell variant='head' align="center">1 Year Change Category</TableCell>
                       <TableCell variant='head' align="center">3 Year Change Category</TableCell>
+                      <TableCell variant='head' align="center">Run Off Coefficient</TableCell>
+                      <TableCell variant='head' align="center">Vegetation Density</TableCell>
                       <TableCell variant='head' align="right"># Structures</TableCell>
                     </TableRow>
                   </TableHead>
@@ -633,6 +642,8 @@ export default function ReactLeafletMap() {
                               variant="filled" 
                               style={chipRank(feature.properties.ndvi_change_three_year_bin)} />                        
                           </TableCell>
+                          <TableCell align="right">{feature.properties.runoff_coefficient ? feature.properties.runoff_coefficient.toFixed(4) : 0}</TableCell>
+                          <TableCell align="right">{feature.properties.runoff_coefficient ? feature.properties.vegetation_density.toFixed(4) : 0}</TableCell>   
                           <TableCell align="right">{feature.properties.total_building_count}</TableCell>
                         </TableRow>                
                       );
@@ -661,8 +672,7 @@ export default function ReactLeafletMap() {
                 icon={ customMarkerIconCurrent }
                 position={[currentDamPoint[1], currentDamPoint[0]]}>
               </Marker>
-          ) : (<></>)
-          }
+          ) : (<></>)}
           <MarkerClusterGroup>
             {damData?.features.map((item, index) => {
               const [longitude, latitude] = item.geometry.coordinates;
