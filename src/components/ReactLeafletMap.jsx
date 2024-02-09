@@ -415,8 +415,8 @@ export default function ReactLeafletMap() {
               )}
         </Box>
         <Box pb={5}>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
+          <Accordion style={{ backgroundColor: '#F9F9F9' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{ borderBottom: '1px solid #AFAFAF' }}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
                 <StyledBadge badgeContent={currentDamFeature ? '1 Dam' : '0 Dam\'s'} color="primary" showZero>
                   <PlaceIcon align='center' style={{ color: '#A6192E', stroke: '#C26E60', paddingRight: '8px' }}/> Current Dam
@@ -473,8 +473,8 @@ export default function ReactLeafletMap() {
           </Accordion>                
         </Box>      
         <Box pb={2}>
-         <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
+         <Accordion style={{ backgroundColor: '#F9F9F9' }} >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #AFAFAF'}}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
                 <StyledBadge badgeContent={intersectingHuc ? '1 HUC12' : '0 HUC12'} showZero color="primary" style={{right: '-15px'}}>
                   <PentagonTwoToneIcon align='center' style={{ paddingRight: '8px' }}/> Watershed Dam is Located In
@@ -529,8 +529,8 @@ export default function ReactLeafletMap() {
           </Accordion>          
         </Box>
         <Box pb={2}>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
+          <Accordion style={{ backgroundColor: '#F9F9F9' }} >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #AFAFAF'}}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
                 <StyledBadge badgeContent={intersectingHuc ? `${intersectingHuc.properties.downstream_huc_list.length} HUC12`: '0 HUC12'} showZero color="primary" style={{right: '-15px'}}>
                   <PentagonTwoToneIcon align='center' style={{ color:'#5ab4ac', paddingRight: '8px' }}/> Downstream Watersheds 
@@ -592,8 +592,8 @@ export default function ReactLeafletMap() {
           </Accordion>
         </Box>
         <Box pb={2}>
-        <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #FAFAFA'}}>
+        <Accordion style={{ backgroundColor: '#F9F9F9' }} >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header" style={{borderBottom: '1px solid #AFAFAF'}}>
             <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
               <StyledBadge badgeContent={intersectingHuc ? `${intersectingHuc.properties.upstream_huc_list.length} HUC12`: '0 HUC12'} showZero color="primary" style={{right: '-15px'}}>
                 <PentagonTwoToneIcon align='center' style={{ color:'#d8b365', paddingRight: '8px' }}/> Upstream Watersheds 
