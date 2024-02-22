@@ -377,10 +377,7 @@ export default function ReactLeafletMap() {
                 <FormControlLabel onChange={() => {setMapBy('threeyearchange')}} checked={mapBy === 'threeyearchange' ? true : false} value="threeyearchange" control={<Radio />} label="3 year change" />
               </RadioGroup>
               ) : (
-                <Typography variant="body2" style={{color: '#000000', padding: '4px' }}>
-                    Select a dam to get started
-                </Typography>
-                
+                <></>
               )}
             </FormControl>
            { mapBy === 'updown' ? (
