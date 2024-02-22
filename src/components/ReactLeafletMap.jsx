@@ -331,7 +331,7 @@ export default function ReactLeafletMap() {
         <Box pb={1}>
           <Box pb={2}>
               <Typography variant="h6" style={{ display: 'flex', alignItems: 'center'}}>
-                <PlaceIcon align='center' style={{ color: '#003DA5', stroke: '#003DA5', paddingRight: '8px' }}/> Find a dam
+                <PlaceIcon align='center' style={{ color: '#003DA5', stroke: '#003DA5', paddingRight: '8px' }}/> Search for a dam
               </Typography>
             </Box>
             <Box pb={2}>
@@ -354,7 +354,7 @@ export default function ReactLeafletMap() {
                     setIntersectingHuc(intersectingPolygon);                    
                   }}
                   isOptionEqualToValue={(option, value) => option.properties.Dam_Name === value.properties.Dam_Name}
-                  renderInput={(params) => (<TextField {...params} key={'test'} label="Find for a dam" placeholder="Find for a dam" />)} 
+                  renderInput={(params) => (<TextField {...params} key={'test'} label="Search for a dam" placeholder="Search for a dam" />)} 
                   sx={{ width: '500px' }}/>
             ) : (
               <></>
@@ -364,6 +364,12 @@ export default function ReactLeafletMap() {
         <Box pt={1} pb={2} px={1}>
           <FormControl size='small' >
             <FormLabel id="demo-row-radio-buttons-group-label">Draw selected watersheds by</FormLabel>
+            <ul  style={{color: '#000000', fontSize: '0.75rem', paddingLeft: '20px', marginTop: '4px' }}>
+              <li>Change is the change in NDVI between two dates. We are using NDVI as a proxy for the loss or gain of vegetation.</li>
+              <li>1-year change is the 1-year change of NDVI for the HUC-12.</li>
+              <li>3-year change is the 3-year change of NDVI for the HUC-12.</li>
+              <li>High, Medium, and low are quantiles using the entire state.</li>
+            </ul>            
             {currentDam ? (
               <RadioGroup row aria-labelledby="mapybyRG" name="mapby-radio-buttons-group" size='small' >
                 <FormControlLabel onChange={() => {setMapBy('updown')}} checked={mapBy === 'updown' ? true : false} value="updown" control={<Radio />} label="Default (up and down stream)"/>
@@ -371,9 +377,10 @@ export default function ReactLeafletMap() {
                 <FormControlLabel onChange={() => {setMapBy('threeyearchange')}} checked={mapBy === 'threeyearchange' ? true : false} value="threeyearchange" control={<Radio />} label="3 year change" />
               </RadioGroup>
               ) : (
-                <Typography variant="body2" style={{color: '#000000', fontSize: '0.75rem', padding: '4px' }}>
+                <Typography variant="body2" style={{color: '#000000', padding: '4px' }}>
                     Select a dam to get started
                 </Typography>
+                
               )}
             </FormControl>
            { mapBy === 'updown' ? (
